@@ -1,0 +1,15 @@
+{
+  "name": "vallinajs",
+  "version": "1.0.0",
+  "description": "plain js, primitive",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "primitive",
+    "js;"
+  ],
+  "author": "dontry",
+  "license": "ISC"
+}

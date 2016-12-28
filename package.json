@@ -1,0 +1,16 @@
+{
+  "name": "javascript30",
+  "version": "1.0.0",
+  "description": "30days javascript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "react",
+    "vallina",
+    "javascript"
+  ],
+  "author": "dontry",
+  "license": "ISC"
+}
