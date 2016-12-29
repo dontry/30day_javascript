@@ -1,0 +1,103 @@
+/*
+* @Author: dontry
+* @Date:   2016-12-29 16:44:46
+* @Last Modified by:   dontry
+* @Last Modified time: 2016-12-29 21:45:43
+*/
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+html {
+    background: radial-gradient(circle, #79d1fa 0%, #3965fa 20%, #0f8efa 90%);
+    background-size: cover;
+    font-family: 'helvetica neue';
+    text-align: center;
+    font-size: 10px;
+}
+
+
+/*center clock*/
+
+body {
+    display: flex;
+    flex: 1;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+}
+
+.clock {
+    position: relative;
+    border: 20px solid #fff;
+    width: 40rem;
+    height: 40rem;
+    background-color: rgba(0, 0, 0, .2);
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px rgba(0, 0, 0, .1), /*box-shadow?*/
+    inset 0 0 0 3px #efefef, inset 0 0 10px #000, 0 0 10px rgba(0, 0, 0, .2);
+}
+
+.clock-face {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.hand {
+    position: absolute;
+    height: 100%;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    transition: all .3s;
+    transition-timing-function: cubic-bezier(0, 2.61, 0.81, 0.26); /*simulate the tick tok effect*/
+}
+.hand::before {
+    content: '';
+    /*you must specify content value*/
+    position: absolute;
+    box-shadow: 0 1px 1px 1px rgba(0, 0, 0, .1);
+    border-radius: 50% 50% 0 0;
+    background-color: #fff;
+    left: 0;
+}
+
+.hour-hand {
+    width: 6px;
+    transform: rotate(0deg);
+}
+.hour-hand::before {
+    width: 6px;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    top: 25%;
+    height: 25%;
+}
+
+.min-hand {
+    width: 4px;
+    transform: rotate(0deg);
+}
+.min-hand::before {
+    width: 4px;
+    border-bottom-right-radius: 2px;
+    border-bottom-left-radius: 2px;
+    top: 15%;
+    height: 35%;
+}
+
+.second-hand {
+    width: 2px;
+    transform: rotate(0deg);
+}
+.second-hand::before {
+    border-bottom-right-radius: 1px;
+    border-bottom-left-radius: 1px;
+    width: 2px;
+    top: 7%;
+    height: 43%;
+}
