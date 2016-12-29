@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://fb.me/react-15.2.1.js"></script>
+    <script src="https://fb.me/react-dom-15.2.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.js"></script>
+    <title>Drum Kit</title>
+</head>
+
+<body>
+    <div id="root">
+
+    </div>
+    <script type="text/babel">
+        var Container = React.createClass({
+            getDefaultProps() {
+                return {
+                        keys: [
+                        {
+                            keyCode: '65',
+                            letter: 'A',
+                            sound: 'clap'
+                        },
+                        {
+                            keyCode: '83',
+                            letter: 'S',
+                            sound: 'hihat'
+                        },
+                        {
+                            keyCode: '68',
+                            letter: 'D',
+                            sound: 'kick'
+                        },
+                        {
+                            keyCode: '70',
+                            letter: 'F',
+                            sound: 'openhat'
+                        },
+                        {
+                            keyCode: '71',
+                            letter: 'G',
+                            sound: 'boom'
+                        },
+                        {
+                            keyCode: '72',
+                            letter: 'H',
+                            sound: 'ride'
+                        },
+                        {
+                            keyCode: '74',
+                            letter: 'J',
+                            sound: 'snare'
+                        },
+                        {
+                            keyCode: '75',
+                            letter: 'K',
+                            sound: 'tom'
+                        },
+                        {
+                            keyCode: '76',
+                            letter: 'L',
+                            sound: 'tink'
+                        }]
+                    };
+            },
+            componentWillMount() {  //window event listener add here?
+                window.addEventListener('keydown',this.playSound);
+            },
+            playSound(e) {
+                let key = document.querySelector(`.key[data-key="${e.keyCode}"]`);
+                let audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
+                if (!audio) return;
+
+                key.classList.add('playing');
+                audio.currentTime = 0;
+                audio.play();
+            },
+            nextId() {
+                this.uniqueId = this.uniqueId || 0;
+                return this.uniqueId++;
+            },
+            eachKey(key) {
+                key.id = this.nextId();
+                console.log(key);
+                return <Key key={key.id} keyCode={key.keyCode} sound={key.sound} letter={key.letter}/>
+            },
+            eachAudio(key) {
+                return <Audio key={key.id} keyCode={key.keyCode} sound={key.sound}/>
+            },
+            render() {
+                return (
+                    <div>
+                        <ul className='keys'>
+                            {this.props.keys.map(this.eachKey)}
+                        </ul>
+                        <div className='audios'>
+                            {this.props.keys.map(this.eachAudio)}
+                        </div>
+                    </div>
+                );
+            }
+        });
+
+        var Key = React.createClass({
+            removeTransition(e) {
+                if(e.propertyName !== 'transform') return;
+                e.target.classList.remove('playing');
+            },
+            addTransition(e) {
+                if(e.keyCode === this.props.keyCode)
+                {
+                    this.classList.add('playing');
+                }
+            },
+            render() {
+                return (
+                    <li className='key' data-key={this.props.keyCode}
+                    onTransitionEnd={this.removeTransition}>
+                        <kbd>{this.props.letter}</kbd>
+                        <span className="sound">{this.props.sound}</span>
+                    </li>);
+            }
+        });
+
+        var Audio = React.createClass({
+            playSound(e) {
+                if(e.keyCode === this.props.keyCode)
+                {
+                    audio.currentTime = 0;
+                    audio.play();
+                }
+            },
+            render() {
+                var src = `sounds/${this.props.sound}.wav`;
+                return (
+                    <audio src={src} data-key={this.props.keyCode}></audio>
+                );
+            }
+        });
+
+        ReactDOM.render(<Container />, document.getElementById('root'));
+    </script>
+</body>
+
+</html>
