@@ -116,6 +116,7 @@
                 }
             },
             render() {
+                console.log('key render');
                 return (
                     <li className='key' data-key={this.props.keyCode}
                     onTransitionEnd={this.removeTransition}>

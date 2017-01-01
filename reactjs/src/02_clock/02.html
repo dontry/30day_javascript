@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="style.css">
+        <script src="https://fb.me/react-15.2.1.js"></script>
+        <script src="https://fb.me/react-dom-15.2.1.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.js"></script>
+        <title>Clock</title>
+    </head>
+    <body>
+        <div id="root"></div>
+        <script type='text/babel'>
+            class Clock extends React.Component{
+                constructor(props) {
+                    super(props);
+                    this.setDate = this.setDate.bind(this);
+                    this.state = {
+                        second: 0,
+                        minute: 0,
+                        hour: 0
+                    }
+                }
+                componentDidMount() {
+                    setInterval(this.setDate, 1000);
+                }
+                setDate() {
+                    let now = new Date();
+                    let sec = now.getSeconds();
+                    let min = now.getMinutes();
+                    let hr = now.getHours();
+
+                    this.setState({
+                        second: sec,
+                        minute: min,
+                        hour: hr
+                    });
+                }
+                render() {
+                    console.log(`${this.state.hour}:${this.state.minute}:${this.state.second}`);
+                    return (
+                        <div className = 'clock'>
+                            <div className="clock-face">
+                                <HourHand minute={this.state.minute} hour={this.state.hour}/>
+                                <MinuteHand minute={this.state.minute}
+                                second={this.state.second}/>
+                                <SecondHand second={this.state.second}/>
+                            </div>
+                        </div>
+                    )
+                }
+            };
+
+            function Hand(props) {
+                return (
+                    <div className={`hand ${props.handType}`} style={{transform: `rotate(${props.degree}deg)`}}/>
+                )
+            };
+
+            function HourHand(props) {
+                let hourDeg = (props.hour + props.minute / 60) / 12 * 360;
+                return  <Hand handType='hour-hand' degree={hourDeg}/>
+            };
+
+            function MinuteHand(props) {
+                let minuteDeg = (props.minute + props.second / 60) / 60 * 360;
+                return <Hand handType='min-hand' degree={minuteDeg}/>
+            };
+
+            function SecondHand(props) {
+                let secondDeg = props.second / 60 * 360;
+                return <Hand handType = 'second-hand' degree={secondDeg}/>
+            }
+
+            ReactDOM.render(<Clock/>, document.getElementById('root'));
+        </script>
+    </body>
+</html>
+
