@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="style.css"/>
+        <script src="https://fb.me/react-15.2.1.js"></script>
+        <script src="https://fb.me/react-dom-15.2.1.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.js"></script>
+        <title>Scoped CSS Variables and JS</title>
+    </head>
+    <body>
+        <div id="root"></div>
+        <script type="text/babel">
+        class Container extends React.Component {
+            constructor(props) {
+                super(props);
+                this.defaultProps = {
+                    img: '19.jpg',
+                    alt: 'sample',
+                    headline: 'Update CSS Variables with ',
+                    highlight: 'JS',
+                    spacing: {min: 10, max: 200, default: 10},
+                    blur: {min: 0, max: 25, default: 10},
+                    base: {default: '#ffc600'}
+                }
+
+                this.state = {
+                    spacing: 10,
+                    blur: 10,
+                    base: '#ffc600',
+                }
+            }
+
+            render() {
+                return (
+                    <div className="Container">
+                        <h2>{this.defaultProps.headline}<span className='hl'>{this.defaultProps.highlight}</span></h2>
+                        <div className="controls">
+                            <SpacingRange min={this.defaultProps.spacing.min} max={this.defaultProps.spacing.max} default={this.defaultProps.spacing.default}/>
+                            <BlurRange min={this.defaultProps.blur.min} max={this.defaultProps.blur.max} default={this.defaultProps.blur.default}/>
+                            <ColorWheel default={this.defaultProps.base.default}></ColorWheel>
+                        </div>
+                        <img src={this.defaultProps.img} alt={this.defaultProps.alt}/>
+                    </div>
+                )
+            }
+        }
+
+
+
+
+        function Range(props) {
+            let min = `${props.min}px`;
+            let max = `${props.max}px`;
+            let defaultVale = `${props.default}px`;
+            return (
+                <div>
+                    <label htmlFor={props.id}>{props.id}: </label>
+                    <input id={props.id}  type='range' name={props.id} type='range' min={min} max={max} defaultValue={props.defaultValue}/>
+                </div>
+            )
+        }
+
+        function SpacingRange(props) {
+            return <Range id='spacing'  min={props.min} max={props.max} default={props.default}></Range>
+        }
+
+        function BlurRange(props) {
+            return <Range id='blur' min={props.min} max={props.max} default={props.default}></Range>
+        }
+
+        function ColorWheel(props) {
+            return (
+                <div>
+                    <label htmlFor="base">Base Color: </label>
+                    <input type="color" id="base" name="base" defaultValue={props.default}/>
+                </div>
+            )
+        }
+
+        ReactDOM.render(<Container />, document.getElementById('root'));
+        </script>
+    </body>
+</html>
