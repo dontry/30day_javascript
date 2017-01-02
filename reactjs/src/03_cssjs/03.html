@@ -10,75 +10,142 @@
     </head>
     <body>
         <div id="root"></div>
-        <script type="text/babel">
-        class Container extends React.Component {
-            constructor(props) {
-                super(props);
-                this.defaultProps = {
-                    img: '19.jpg',
-                    alt: 'sample',
-                    headline: 'Update CSS Variables with ',
-                    highlight: 'JS',
-                    spacing: {min: 10, max: 200, default: 10},
-                    blur: {min: 0, max: 25, default: 10},
-                    base: {default: '#ffc600'}
+        <script type = "text/babel">
+            class Container extends React.Component {
+                constructor(props) {
+                    super(props);
+                    this.defaultProps = {
+                        img: '19.jpg',
+                        alt: 'sample',
+                        headline: 'Update CSS Variables with ',
+                        highlight: 'JS',
+                        spacing: {
+                            min: 10,
+                            max: 200,
+                            default: 10
+                        },
+                        blur: {
+                            min: 0,
+                            max: 25,
+                            default: 10
+                        },
+                        base: {
+                            default: '#ffc600'
+                        }
+                    };
+
+                    this.state = {
+                        spacing: 10,
+                        blur: 10,
+                        base: '#ffc600',
+                    };
+
+                    this.blurChange = this.blurChange.bind(this);
+                    this.spacingChange = this.spacingChange.bind(this);
+                    this.baseChange = this.baseChange.bind(this);
                 }
 
-                this.state = {
-                    spacing: 10,
-                    blur: 10,
-                    base: '#ffc600',
+                blurChange(val) {
+                    this.setState({
+                        blur: val
+                    });
                 }
-            }
 
-            render() {
-                return (
-                    <div className="Container">
-                        <h2>{this.defaultProps.headline}<span className='hl'>{this.defaultProps.highlight}</span></h2>
-                        <div className="controls">
-                            <SpacingRange min={this.defaultProps.spacing.min} max={this.defaultProps.spacing.max} default={this.defaultProps.spacing.default}/>
-                            <BlurRange min={this.defaultProps.blur.min} max={this.defaultProps.blur.max} default={this.defaultProps.blur.default}/>
-                            <ColorWheel default={this.defaultProps.base.default}></ColorWheel>
+                spacingChange(val) {
+                    this.setState({
+                        spacing: val
+                    });
+                }
+
+                baseChange(val) {
+                    this.setState({
+                        base: val
+                    })
+                }
+
+                render() {
+                    let imgStyle = {
+                        padding: `${this.state.spacing}px`,
+                        backgroundColor: `${this.state.base}`,
+                        filter: `blur(${this.state.blur}px)`
+                    };
+
+                    let hlStyle = {
+                        color: `${this.state.base}`
+                    }
+
+
+                    return (
+                        <div className="Container">
+                            <h2>{this.defaultProps.headline}<span className='hl' style={hlStyle}>{this.defaultProps.highlight}</span></h2>
+                            <div className="controls">
+                                <SpacingRange min={this.defaultProps.spacing.min} max={this.defaultProps.spacing.max} default={this.defaultProps.spacing.default} onChange={this.spacingChange}/>
+                                <BlurRange min={this.defaultProps.blur.min} max={this.defaultProps.blur.max} default={this.defaultProps.blur.default} onChange={this.blurChange}/>
+                                <ColorWheel default={this.defaultProps.base.default} onChange={this.baseChange}></ColorWheel>
+                            </div>
+                            <img src={this.defaultProps.img} alt={this.defaultProps.alt} style={imgStyle}/>
                         </div>
-                        <img src={this.defaultProps.img} alt={this.defaultProps.alt}/>
-                    </div>
-                )
+                    )
+                }
             }
-        }
 
 
 
 
-        function Range(props) {
-            let min = `${props.min}px`;
-            let max = `${props.max}px`;
-            let defaultVale = `${props.default}px`;
-            return (
-                <div>
-                    <label htmlFor={props.id}>{props.id}: </label>
-                    <input id={props.id}  type='range' name={props.id} type='range' min={min} max={max} defaultValue={props.defaultValue}/>
-                </div>
-            )
-        }
+            class Range extends React.Component {
+                constructor(props) {
+                    super(props)
+                    let min = `${props.min}px`;
+                    let max = `${props.max}px`;
+                    let defaultValue = `${props.default}px`;
+                    this.handleChange = this.handleChange.bind(this);
+                }
 
-        function SpacingRange(props) {
-            return <Range id='spacing'  min={props.min} max={props.max} default={props.default}></Range>
-        }
+                handleChange() {
+                    this.props.onChange(this.rangeInput.value);
+                }
 
-        function BlurRange(props) {
-            return <Range id='blur' min={props.min} max={props.max} default={props.default}></Range>
-        }
+                render() {
+                    return (
+                        <div>
+                            <label htmlFor={this.props.id}>{this.props.id}: </label>
+                            <input id={this.props.id}  type='range' name={this.props.id} type='range' min={this.props.min} max={this.props.max} defaultValue={this.props.defaultValue} onChange={this.handleChange} ref={(input) => this.rangeInput = input}/>
+                        </div>
+                    )
+                }
+            }
 
-        function ColorWheel(props) {
-            return (
-                <div>
-                    <label htmlFor="base">Base Color: </label>
-                    <input type="color" id="base" name="base" defaultValue={props.default}/>
-                </div>
-            )
-        }
 
-        ReactDOM.render(<Container />, document.getElementById('root'));
+            function SpacingRange(props) {
+                return <Range id='spacing'  min={props.min} max={props.max} default={props.default} onChange={props.onChange}/>
+            }
+
+            function BlurRange(props) {
+                return <Range id='blur' min={props.min} max={props.max} default={props.default} onChange={props.onChange}/>
+            }
+
+            class ColorWheel extends React.Component {
+                constructor(props) {
+                    super(props)
+                    let defaultValue = props.default
+                    this.handleChange = this.handleChange.bind(this);
+                }
+
+                handleChange() {
+                    this.props.onChange(this.colorInput.value);
+                }
+
+                render() {
+                    return (
+                        <div>
+                            <label htmlFor="base">Base Color: </label>
+                            <input type="color" id="base" name="base" defaultValue={this.props.default} onChange={this.handleChange} ref={(input) => this.colorInput = input}/>
+                        </div>
+                    )
+                }
+            }
+
+            ReactDOM.render(<Container />, document.getElementById('root'));
         </script>
     </body>
 </html>

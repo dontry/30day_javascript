@@ -2,7 +2,7 @@
 * @Author: dontry
 * @Date:   2017-01-01 22:40:31
 * @Last Modified by:   dontry
-* @Last Modified time: 2017-01-01 23:33:55
+* @Last Modified time: 2017-01-02 11:56:16
 */
 
 body {
@@ -21,6 +21,15 @@ body {
     margin-bottom: 50px;
 }
 
+label {
+    text-transform: capitalize;
+}
+
 input {
     width: 100px;
+}
+
+img {
+    width: 600px;
+    height: 400px;
 }
