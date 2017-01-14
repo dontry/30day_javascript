@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Ajax</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://fb.me/react-15.2.1.js"></script>
+    <script src="https://fb.me/react-dom-15.2.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.js"></script>
+</head>
+
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+
+        class AppContainer extends React.Component{
+            constructor(props) {
+                super(props)
+
+                this.state = {
+                   places: []
+                }
+            }
+            componentDidMount() {
+                fetch(endpoint)
+                .then(blob => blob.json())
+                .then(data => this.setState({places: data}));
+            }
+            render() {
+                return <App places={this.state.places} />
+            }
+        }
+
+        class App extends React.Component{
+            constructor(props) {
+                super(props)
+                this.state = {
+                    keyword: "",
+                    queries: []
+                }
+                this.findMatches = this.findMatches.bind(this);
+            }
+            findMatches(keyword) {
+                const regex = new RegExp(keyword, 'gi');
+                const queries = this.props.places.filter(place => {
+                    return place.city.match(regex) || place.state.match(regex);
+                });
+                this.setState({
+                    keyword: keyword,
+                    queries: queries
+                });
+            }
+            render() {
+                return (<form className="search-form">
+                    <SearchBox keyword={this.state.keyword} onKeyUp={this.findMatches}/>
+                    <QueryList places={this.state.queries}/>
+                </form>)
+            }
+        }
+
+       class SearchBox extends React.Component{
+         constructor(props) {
+            super(props);
+            this.defaultProps = {
+                placeholder: 'City or ssssstate'
+            }
+            this.handleKeyUp = this.handleKeyUp.bind(this);
+         }
+         handleKeyUp() {
+            console.log('keyup');
+            this.props.onKeyUp(this.KeywordInput.value);
+         }
+         render() {
+            return <input type="text" className="search" placeholder={this.props.placeHolder} onKeyUp={this.handleKeyUp}  ref={(input) => this.KeywordInput = input}/>
+         }
+       };
+
+       function QueryList(props) {
+            const places = props.places;
+            function eachQuery(place,idx) {
+                return <QueryItem key={idx} cityName={place.city} stateName={place.state} />
+            }
+            return (
+                <ul className="suggestions">
+                    {places.map((place,idx) => eachQuery(place,idx))}
+                </ul>
+                )
+        }
+
+        function QueryItem(props) {
+            return (
+                <li>
+                    <span className="name">{props.cityName}, {props.stateName}</span>
+                </li>
+                )
+        }
+
+        ReactDOM.render(<AppContainer/>, document.getElementById(
+            'root'));
+    </script>
+</body>
+
+</html>
