@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Canvas</title>
+</head>
+<body>
+    <style>
+        #pen {
+            position: absolute;
+            height: 30px;
+            width: 30px;
+            background-color: #bada55;
+            border-radius: 50%;
+            z-index: 10;
+            top: 0;
+            left: 0;
+        }
+    </style>
+    <canvas id="draw"></canvas>
+    <div id="pen"></div>
+    <script>
+        const canvas = document.querySelector('#draw');
+        const ctx = canvas.getContext('2d');
+        const pen = document.querySelector('#pen');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        ctx.strokeStyle = '#BADA55';
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+        ctx.lineWidth = 30;
+
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+        let hue = 0;
+
+
+        function draw(e) {
+            pen.style.top = `${e.pageY - ctx.lineWidth / 2}px`;
+            pen.style.left = `${e.pageX - ctx.lineWidth / 2}px`;
+
+            // console.log(e.offsetY, pen.style.top);
+
+            if(!isDrawing) return;
+
+            ctx.strokeStyle=`hsl(${hue}, 100%, 50%)`;
+            pen.style.backgroundColor = `hsl(${hue}, 100%, 50%)`;
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(e.pageX, e.pageY);
+            ctx.stroke();
+            [lastX, lastY] = [e.pageX, e.pageY];
+            hue = (++hue)%360;
+        }
+
+
+        function changeStrokeSize(e) {
+            if(e.keyCode === 187)
+                ctx.lineWidth++;
+
+            if(e.keyCode === 189)
+                ctx.lineWidth--;
+
+            pen.style.width = ctx.lineWidth + 'px';
+            pen.style.height = ctx.lineWidth + 'px';
+        }
+
+
+
+        window.addEventListener('mousemove', draw);
+        window.addEventListener('mousedown', (e) => {
+            console.log('mousedown');
+            lastX = e.pageX;
+            lastY = e.pageY;
+            console.log(e.pageX + ', ' + e.pageY);
+            isDrawing = true;
+        });
+        window.addEventListener('mouseup', () => isDrawing = false);
+        // window.addEventListener('mouseout', () => isDrawing = false);
+        window.addEventListener('keydown', changeStrokeSize);
+    </script>
+</body>
+</html>
