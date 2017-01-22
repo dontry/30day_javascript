@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Checkbox 👆</title>
+    <script src="https://fb.me/react-15.2.1.js"></script>
+    <script src="https://fb.me/react-dom-15.2.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.js"></script>
+</head>
+
+<body>
+    <style>
+    html {
+        font-family: sans-serif;
+        background: #ffc600;
+    }
+
+    .inbox {
+        max-width: 400px;
+        margin: 50px auto;
+        background: #fff;
+        border-radius: 5px;
+        box-shadow: 10px 10px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    .item {
+        display: flex;
+        ;
+        align-items: center;
+        border-bottom: 1px solid #f1f1f1;
+    }
+
+    .item:last-child {
+        border-bottom: 0;
+    }
+
+    input:checked + p {
+        background: #f9f9f9;
+        text-decoration: line-through;
+    }
+
+    input[type='checkbox'] {
+        margin: 20px;
+    }
+
+    p {
+        margin: 0;
+        padding: 20px;
+        transition: background .2s;
+        flex: 1;
+        font-family: 'helvetica neue';
+        font-size: 20px;
+        font-weight: 200;
+        border-left: 1px solid #d1e2ff;
+    }
+
+    .details {
+        text-align: center;
+        font-size: 15px;
+    }
+    </style>
+    <div id='root'></div>
+    <script type='text/babel'>
+        class CheckboxList extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = {
+                    anchor: -1,
+                    lastCheck: -1,
+                    checkboxes: [{
+                        checked: false,
+                        text: 'This is an inbox layout.'
+                    }, {
+                        checked: false,
+                        text: 'Check one item'
+                    }, {
+                        checked: false,
+                        text: 'Hold down your Shift key'
+                    }, {
+                        checked: false,
+                        text: 'Check a lower item'
+                    }, {
+                        checked: false,
+                        text: 'Everything inbetween should also be set to checked'
+                    }, {
+                        checked: false,
+                        text: 'Try do it with React'
+                    }, {
+                        checked: false,
+                        text: 'Good Luck!'
+                    }, {
+                        checked: false,
+                        text: 'Don\'t forget to tweet your result!'
+                    }]
+                }
+            }
+            handleClick(e) {
+                let lastCheck = this.state.lastCheck,
+                    anchor = this.state.anchor;
+                console.log(e);
+                if(e.shiftKey && anchor !== -1) {
+                    lastCheck = e.target.dataset.key;
+                    const checkboxes = this.state.checkboxes.map((checkbox, idx) => {
+                        if ((idx >= anchor && idx <= lastCheck) || (idx <= anchor && idx >= lastCheck))
+                             checkbox.checked = true;
+                        else
+                            checkbox.checked = false;
+                        return checkbox;
+                    });
+                    console.table(checkboxes);
+                    this.setState({
+                        lastCheck: lastCheck,
+                        checkboxes: checkboxes
+                    });
+                } else {
+                    anchor = parseInt(e.target.dataset.key);
+                    const checkboxes = this.state.checkboxes.map((
+                        checkbox, idx) => {
+                            checkbox.checked = idx === anchor ? true : false;
+                            return checkbox;
+                    });
+                    this.setState({
+                        anchor: anchor,
+                        checkboxes: checkboxes
+                    });
+                }
+            }
+            eachCheckbox(checkbox, idx) {
+                // console.log(checkbox);
+                return <Checkbox key={idx} idx={idx} checked={checkbox.checked} text={checkbox.text} onClick={this.handleClick.bind(this)} />
+            }
+            render() {
+                const children = this.state.checkboxes.map((checkbox, idx) => this.eachCheckbox(checkbox, idx));
+                console.log(children);
+                return (
+                    <div className='inbox'>
+                        {children}
+                    </div>
+                )
+            }
+        }
+
+        class Checkbox extends React.Component {
+            constructor(props) {
+                super(props);
+            }
+            handleClick(e) {
+                this.props.onClick(e);
+            }
+            render() {
+                return (
+                    <div className='item'>
+                        <input type='checkbox' data-key={this.props.idx} checked={this.props.checked} onClick={this.handleClick.bind(this)}
+                            ref={(checked) => this.CheckedInput = checked}/>
+                        <p>{this.props.text}</p>
+                    </div>
+                )
+            }
+        }
+        ReactDOM.render(
+            <CheckboxList />,
+            document.getElementById('root'));
+
+    </script>
+</body>
+
+</html>
